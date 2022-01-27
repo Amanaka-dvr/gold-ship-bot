@@ -3,8 +3,8 @@ const querystring = require('querystring');
 const discord = require('discord.js');
 const crypto = require('crypto');
 const client = new discord.Client();
-const shiritori = require('./lib/shiritori');
-const command = require('./lib/command');
+//const shiritori = require('./lib/shiritori');
+//const command = require('./lib/command');
 const password = "mintmotionmintmotionmintmotion";
 const debugChannelId = "933964587777286214";
 const logChannelId = "934986946663559198";
@@ -195,10 +195,19 @@ client.on('message', message => {
 //John 505846772069826571
 //Amanaka 786914493640081438
   if (message.author.id == 505846772069826571 && narikiri == true){
-    let text = message.content+"\n";
-    sendMsg(message.channel.id, text);
-    message.delete();
-    return;
+   const file = message.attachments.first()
+   if (!file.height && !file.width){
+     sendMsg(message.channel.id, text);
+     message.delete();
+     return;
+   }
+   return message.channel.send({
+     embed: {
+       image: {
+         url: file.url
+       }
+     }
+   })
   }
   if(message.isMemberMentioned(client.user)){
     sendReply(message, "おう！なんか用か？");
@@ -570,10 +579,12 @@ const setAnswer = (A,B,C,D,E,F,G,H,I,J,K,L,M,N) => {
     return;
   }
   
+  /*
   if(message.channel.id == debugChannelId) {
         shiritori(message);
         return;
   }
+  */
   
   if (message.content.match(/ゴルシ、お金ちょうだい/)){
     let text = "120億で足りるか？";
