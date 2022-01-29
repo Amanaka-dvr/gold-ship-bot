@@ -195,7 +195,8 @@ client.on('message', message => {
 //John 505846772069826571
 //Amanaka 786914493640081438
   if (message.author.id == 505846772069826571 && narikiri == true){
-   const file = message.attachments.first()
+   const file = message.attachments.first();
+   let text = message.content + "\n";
    if (!file.height && !file.width){
      sendMsg(message.channel.id, text);
      message.delete();
