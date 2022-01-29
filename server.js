@@ -215,10 +215,12 @@ client.on('message', message => {
      }
    })
   }
+  /*
   if(message.isMemberMentioned(client.user)){
     sendReply(message, "おう！なんか用か？");
     return;
   }
+  */
   if (message.content.match(/564\s\d+\s\d+\s\d+/)){
     let re = /[^\s]+/g;
     let scdstr = message.content.match(re);
