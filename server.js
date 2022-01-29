@@ -197,6 +197,11 @@ client.on('message', message => {
   if (message.author.id == 505846772069826571 && narikiri == true){
    const file = message.attachments.first();
    let text = message.content + "\n";
+   if (!file) {
+     sendMsg(message.channel.id, text);
+     message.delete();
+     return;
+   }
    if (!file.height && !file.width){
      sendMsg(message.channel.id, text);
      message.delete();
