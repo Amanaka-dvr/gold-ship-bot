@@ -3,7 +3,7 @@ const querystring = require('querystring');
 const discord = require('discord.js');
 const crypto = require('crypto');
 const client = new discord.Client();
-//const shiritori = require('./lib/shiritori');
+const shiritori = require('./lib/shiritori');
 //const command = require('./lib/command');
 const password = "mintmotionmintmotionmintmotion";
 const debugChannelId = "933964587777286214";
@@ -579,12 +579,10 @@ const setAnswer = (A,B,C,D,E,F,G,H,I,J,K,L,M,N) => {
     return;
   }
   
-  /*
   if(message.channel.id == debugChannelId) {
         shiritori(message);
         return;
   }
-  */
   
   if (message.content.match(/ゴルシ、お金ちょうだい/)){
     let text = "120億で足りるか？";
