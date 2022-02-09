@@ -1,17 +1,44 @@
-const http = require('http');
-const querystring = require('querystring');
-const discord = require('discord.js');
-const crypto = require('crypto');
+const http = require('http');//for setting
+const querystring = require('querystring');//for setting
+const discord = require('discord.js'); //for setting
+const crypto = require('crypto'); //to check hash value
+const axiosBase = require("axios"); //to post other bot json
+const Eris = require("eris"); //to read text message
+const {VoiceText} = require('voice-text'); //to read text message
+const {writeFileSync} = require('fs'); //to read text message
+//const Tokens = require('./tokens.js'); //to read text message
 const client = new discord.Client();
+//const voiceText = new discord.VoiceText();
 const shiritori = require('./lib/shiritori');
 //const command = require('./lib/command');
 const password = "mintmotionmintmotionmintmotion";
 const debugChannelId = "933964587777286214";
 const logChannelId = "934986946663559198";
 const mainChannelId = "934139074560786482";
+var connection = null;
+var textBuffer = [];
+const ChannelName = 'text_to_voice';
+var userVoice = {};
+const VoiceTable = ['hikari', 'haruka', 'takeru', 'santa', 'bear', 'show'];
 let emergency = false;
-let narikiri = true;
+let narikiri = "505846772069826571";
 
+const doApi = async (url, data) => {
+  const axios = axiosBase.create({
+    headers: {
+        "Content-Type": "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+    },
+    responseType: "json",
+});
+
+  console.log(data);
+  try{
+    axios.post(url, data);
+  } catch (error) {
+    console.log("Error message: " + error.message);
+  }
+};
 
 http.createServer(function(req, res){
   if (req.method == 'POST') {
@@ -29,6 +56,7 @@ http.createServer(function(req, res){
       console.log("post:" + dataObject.type);
       if(dataObject.type == "wake"){
         console.log("Woke up in post");
+        leadLine();
         res.end();
         return;
       }
@@ -81,9 +109,37 @@ http.createServer(function(req, res){
   }
 }).listen(3000);
 
-client.on('ready', message =>{
+var options = {};
+try {
+    options = require('./options')
+}catch(e){};
+client.on('ready', () =>{
   console.log('Bot準備完了～');
   client.user.setPresence({ activity: { name: 'げーむ' } });
+  //leadLine();
+  //client.guilds.get('918212991135125556').channels.get('933964587777286214').fetchMessages().then((a) => {console.log(a.get("940822001071833108"))});
+  /*
+  client.guilds.channels.catch.forEach(channel => {
+      if (channel.id == 934986946663559198 || channel.id == 933964587777286214 || channel.id == 934338954260512829) {
+            sendMsg(channel.id, "test");
+      }
+  });
+   
+   client.guilds.forEach((guild) => {
+        var flag = true;
+        guild.channels.forEach((channel) => {
+            if (channel.name === ChannelName) {
+                flag = false;
+            }
+        })
+        if (flag) {
+            var parent = guild.channels.forEach((channel) => {
+                return channel.name === 'Text Channels'
+            })
+            guild.createChannel(ChannelName);//, 0, '', parent.id);
+        }
+    })
+    */
 });
 
 client.on('voiceStateUpdate', (oldGuildMember, newGuildMember) =>{
@@ -99,12 +155,209 @@ client.on('voiceStateUpdate', (oldGuildMember, newGuildMember) =>{
  }
 });
 
+/*
 client.on('message', message =>{
   if (message.author.id == 910381775874834462){
     let react = message.guild.emojis.get('933971549361414174');
     message.react(react)
       .then(message => console.log("リアクション: <:A1_so_good:933971549361414174>"))
       .catch(console.error);
+  }
+});
+*/
+
+client.on('message', message =>{
+  if (message.content.match(/!会長を呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(SYMBOLI_RUDOLF, data);
+    return;
+  }
+  if (message.content.match(/!グルーヴを呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(AIR_GROOVE, data);
+    return;
+  }
+  if (message.content.match(/!ブライアンを呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(NARITA_BRIAN, data);
+    return;
+  }
+  if (message.content.match(/!テイオーを呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(TOKAI_TEIO, data);
+    return;
+  }
+  if (message.content.match(/!マックイーンを呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(MEJIRO_MCQUEEN, data);
+    return;
+  }
+  if (message.content.match(/!スぺを呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(SPECIAL_WEEK, data);
+    return;
+  }
+  if (message.content.match(/!スズカを呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(SILENCE_SUZUKA, data);
+    return;
+  }
+  if (message.content.match(/!ウオッカを呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(VODKA, data);
+    return;
+  }
+  if (message.content.match(/!ダスカを呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(DAIWA_SCARLET, data);
+    return;
+  }
+  if (message.content.match(/!ネイチャを呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(NICE_NATURE, data);
+    return;
+  }
+  if (message.content.match(/!殿下を呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(FINE_MOTION, data);
+    return;
+  }
+  if (message.content.match(/!タマを呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(TAMAMO_CROSS, data);
+    return;
+  }
+  if (message.content.match(/!ターボを呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(TWIN_TURBO, data);
+    return;
+  }
+  if (message.content.match(/!ファル子を呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(SMART_FALCON, data);
+    return;
+  }
+  if (message.content.match(/!フラッシュを呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(EISHIN_FLASH, data);
+    return;
+  }
+  if (message.content.match(/!タイキを呼ぶ/) && message.channel.id == 937522865354473522){
+    const data = {
+   'contentType' : 'application/json; charset=utf-8',
+   'method' : 'post',
+   'payload' : {
+     'type':'wake'
+   },
+   'muteHttpExceptions': true
+   };
+    doApi(TAIKI_SHUTTLE, data);
+    return;
   }
 });
 
@@ -131,12 +384,32 @@ client.on('message', message =>{
   }
 });
 
+client.on('message', async message => {
+   // !purge コマンドが実行されたら
+  if (message.author.id == 786914493640081438) {
+   if (message.content === '!purge') {
+     // コマンドが送信されたチャンネルから直近100件(上限)メッセージを取得する
+     const messages = await message.channel.fetchMessages({ limit: 3 })
+     // ボット以外が送信したメッセージを抽出
+     const filtered = messages.filter(message => message.author.id == 933850580441497621)//!message.content.match(/大樹のウロ/))
+     // それらのメッセージを一括削除
+     message.channel.bulkDelete(filtered)
+   };
+  }
+ });
+
 client.on('message', message => {
   if(message.author.id == client.user.id || message.author.bot){
     return;
   }
-  //785813870929117204
+  //934004004189503509
   if (message.author.id == 785813870929117204){
+    let caution_text = "【要注意人物の発言です】";
+    let text = caution_text+"\nuser:　"+message.member.displayName+"\nchannel:　<#"+message.channel.id+">\ntext:\n"+message.content+"\n";
+    sendMsg(logChannelId, text);
+    return;
+  }
+  if (message.author.id == 907907754344214548){
     let caution_text = "【要注意人物の発言です】";
     let text = caution_text+"\nuser:　"+message.member.displayName+"\nchannel:　<#"+message.channel.id+">\ntext:\n"+message.content+"\n";
     sendMsg(logChannelId, text);
@@ -163,7 +436,7 @@ client.on('message', message => {
     emergency = true;
     return;
   }
-  if(message.content.match(/[!！]解除/)){
+  if(message.content.match(/[!！]緊急解除/)){
     const role = message.guild.roles.find(roles => roles.name === '生徒会');
     if (!message.member.roles.has(role.id)) {
       return;
@@ -178,27 +451,52 @@ client.on('message', message => {
     return;
     }
   }
-  /*if (message.author.id == 505846772069826571){
+  /*
+  if (message.author.id == 786914493640081438) {
+    const msgJson = {
+        "content": message.content,
+        "embed": "",
+        "message_reference": {
+            "message_id": message.id
+        },
+        "allowed_mentions": {
+            "replied_user": "False"
+        }
+    };
+    message.reply(JSON.stringify(msgJson));
+    console.log(message.reference.id);
+    return;
+  }*/
+  if(message.content.match(/\!ゴルシモード/) && message.channel.id == 937522865354473522){
+    sendReply(message, "設定しました");
+    narikiri = message.author.id;
+    return;
+  }
+  if(message.content.match(/\!解除/) && message.channel.id == 937522865354473522){
+    if (message.author.id == narikiri) {
+      sendReply(message, "解除しました");
+      narikiri = "不在";
+    }
+    return;
+  };
+  if(message.content.match(/\!今のゴルシ/) && message.channel.id == 937522865354473522){
+    let text = "<@" + narikiri + ">";
+    sendReply(message, text);
+    return;
+  }
+  /*
+  if(message.author.id == 786914493640081438){
+    sendMsg(message.channel.id, message.content);
     message.delete();
     return;
   }*/
-  if(message.content.match(/ゴルシモード/)){
-    sendReply(message, "設定しました");
-    narikiri = true;
-    return;
-  }
-  if(message.content.match(/モード解除/)){
-    sendReply(message, "解除しました");
-    narikiri = false;
-    return;
-  }
-//John 505846772069826571
-//Amanaka 786914493640081438
-  if (message.author.id == 505846772069826571 && narikiri == true){
+
+
+  if (message.author.id == narikiri && message.channel.id == 937260648218361856){
    const file = message.attachments.first();
    let text = message.content + "\n";
+   sendMsg(message.channel.id, text);
    if (!file) {
-     sendMsg(message.channel.id, text);
      message.delete();
      return;
    }
@@ -207,13 +505,15 @@ client.on('message', message => {
      message.delete();
      return;
    }
-   return message.channel.send({
+   message.channel.send({
      embed: {
        image: {
          url: file.url
        }
      }
    })
+   message.delete();
+   return;
   }
   /*
   if(message.isMemberMentioned(client.user)){
@@ -221,7 +521,7 @@ client.on('message', message => {
     return;
   }
   */
-  if (message.content.match(/564\s\d+\s\d+\s\d+/)){
+  if (message.content.match(/564\s-?\d+\s-?\d+\s-?\d+/)){
     let re = /[^\s]+/g;
     let scdstr = message.content.match(re);
     let scd = scdstr.map(str=>parseInt(str,10));
@@ -587,10 +887,12 @@ const setAnswer = (A,B,C,D,E,F,G,H,I,J,K,L,M,N) => {
     return;
   }
   
+  /*
   if(message.channel.id == debugChannelId) {
         shiritori(message);
         return;
   }
+  */
   
   if (message.content.match(/ゴルシ、お金ちょうだい/)){
     let text = "120億で足りるか？";
@@ -646,14 +948,16 @@ const setAnswer = (A,B,C,D,E,F,G,H,I,J,K,L,M,N) => {
   if (message.content.match(/今日の運勢|明日の運勢/)){
     let val = Math.random();
     let text = "";
-    if (0<=val&&val<0.03) {
-      text = "大吉\nおーすげー！良いことあるぞ～";
-    } else if (0.03<=val&&val<0.3) {
-      text = "中吉\nいい感じ～";
-    } else if (0.3<=val&&val<0.9) {
-      text = "小吉\nまあまあだな！";
-    } else {
-      text = "凶\nう～ん家にこもってたほうが良いぞ！";
+    let luckval = 0;
+    let weight = [0.001, 0.009, 0.02, 0.07, 0.20, 0.50, 0.10, 0.07, 0.03];
+    let luck = ["ミラクルゴルゴル吉", "ゴル吉", "大吉", "吉", "中吉", "小吉", "凶", "大凶", "💩"];
+    let explanation = ["\n一年分の運使ったな！", "\n帯馬券当たるぞ！", "\nおーすげー！良いことあるぞ～", "\nかなり運良いぞ！", "\n10連で最高レア出るぞ！", "\nまあまあだな！", "\nう～ん家にこもってたほうが良いぞ！", "\n救いはありません！", "\n鳥のフン食らったり、側溝に落ちたり、ドブに突っ込んだり、物壊れたり、最低保証だったりもう最悪だぞ！"]; 
+    for (let i = 0; i < weight.length; i++) {
+      luckval += weight[i];
+      if (val < luckval) {
+        text = luck[i] + explanation[i];
+        break;
+      }
     }
     sendMsg(message.channel.id, text);
     return;
@@ -697,7 +1001,16 @@ function sendReply(message, text){
 }
 
 function sendMsg(channelId, text, option={}){
-  client.channels.get(channelId).send(text, option)
+ return client.channels.get(channelId).send(text, option)
     .then(console.log("メッセージ送信: " + text + JSON.stringify(option)))
     .catch(console.error);
 }
+ 
+ async function leadLine(){
+    const reply1 = await sendMsg("918212991646859336", "ここはフリートーク部屋だぞ！\n<#933715386367639562>に記載のルールを守って楽しもうな！\nThis is a channel where you can talk freely.\nPlease follow the rules written <#933715386367639562> and have fun!");
+    const reply2 = await sendMsg("934430288233238559", "ここはフリートーク部屋だぞ！\n<#933715386367639562>に記載のルールを守って楽しもうな！\nThis is a channel where you can talk freely.\nPlease follow the rules written <#933715386367639562> and have fun!");
+   const reply3 = await sendMsg("933942014737776650", "ここはお絵描き部屋だ！\n<#933715386367639562>に記載のルールを守って楽しもうな！\nThis is a channel where you post your drawings.\nPlease follow the rules written <#933715386367639562> and have fun!");
+    await reply1.delete(25000);
+    await reply2.delete(25000);
+    await reply3.delete(25000);
+  }
