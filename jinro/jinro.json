@@ -1,0 +1,32 @@
+{
+  "config": {
+    "dayTime": 500,
+    "nightTime": 300,
+    "canView": false,
+    "canTalkInVote": true,
+    "limitCOTimes": 3,
+    "canSeeWhoVote": true,
+    "randomKill": true,
+    "canChangeTimeNumber": 0.5,
+    "limitAddTime": 2,
+    "ruleOf15sec": true,
+    "villagerCanCO": false,
+    "continuityGuard": true,
+    "canDetectOnFirstDay": false
+  },
+  "day": 0,
+  "periodOfTime": 0,
+  "time": 0,
+  "player": [
+    {
+      "id": "786914493640081438",
+      "live": true,
+      "role": ""
+    },
+    {
+      "id": "184220387452649472",
+      "live": true,
+      "role": ""
+    }
+  ]
+}
